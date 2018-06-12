@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="helloBean" class="org.spring.core.beans.HelloBean" init-method="display"/>
+
+	<bean id="movieService"
+		class="org.spring.core.beans.MovieFinderService"
+		init-method="init" />
+
+	<bean id="movieLister"
+		class="org.spring.core.beans.MovieLister">
+		<constructor-arg ref="movieService" />
+	</bean>
+
+	<bean id="objPool" factory-method="getInstance"
+		class="org.spring.core.beans.ObjectPool" />
+
+	<bean id="serviceLocator"
+		class="org.spring.core.beans.DefaultServiceLocator" />
+
+	<bean id="clientService" factory-bean="serviceLocator"
+		factory-method="getClientInstance" />
+	<bean id="accountService" factory-bean="serviceLocator"
+		factory-method="getAccountInstance" />
+	<bean id="theaterServices"
+		class="org.spring.core.beans.MovieTheaterServices"></bean>
+
+
+	<!-- constructor and setter based injection -->
+	<bean id="bookTicket"
+		class="org.spring.core.beans.BookaTicket">
+		<constructor-arg ref="movieService" />
+		<property name="movieTheaterService" ref="theaterServices"></property>
+	</bean>
+
+
+	<!-- constructor based autowire dependency -->
+	<bean id="bookTicket-auto" class="org.spring.core.beans.BookaTicket" autowire="constructor">
+		
+		<property name="movieTheaterService" ref="theaterServices"></property>
+	</bean>
+	
+	<!-- autowire byType dependency -->
+	<bean id="bookTicket-byType" class="org.spring.core.beans.BookaTicket" autowire="byType">
+		<constructor-arg ref="movieService" />
+	</bean>
+
+	<!-- Constructor argument type matching -->
+
+	<bean id="exampleBean"
+		class="org.spring.core.beans.ExampleBean">
+		<constructor-arg type="int" value="7500" />
+		<constructor-arg type="java.lang.String" value="42" />
+	</bean>
+	<!-- Constructor argument index -->
+	<bean id="exampleBean1"
+		class="org.spring.core.beans.ExampleBean">
+		<constructor-arg index="0" value="7500" />
+		<constructor-arg index="1" value="42" />
+	</bean>
+
+
+	<!-- Constructor argument name -->
+	<bean id="exampleBean2" class="org.spring.core.beans.ExampleBean">
+		<constructor-arg name="years" value="75" />
+		<constructor-arg name="ultimateAnswer" value="this is ultimate answer" />
+	</bean>
+
+	<!-- lazy initialization -->
+	<bean id="lazyHelloBean" class="org.spring.core.beans.HelloBean" lazy-init="true" init-method="display"/>
+	
+	<!-- prototype hello bean -->
+	<bean id="prototypeHelloBean" class="org.spring.core.beans.HelloBean" scope="prototype" init-method="display"/>
+
+
+</beans>
